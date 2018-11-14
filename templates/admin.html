@@ -1,0 +1,91 @@
+{% extends "admin_layout.html" %}
+
+{% block content %}
+    <style>
+        .card {
+            cursor: pointer;
+        }
+        hr {
+            margin-left: 2%;
+            margin-right: 3%;
+            margin-top: 2%;
+        }
+    </style>
+
+    <div class="container-fluid" style="padding-left: 2%; padding-right: 1%;">
+        <h2>Slider Settings</h2>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card" onclick="window.location='/admin/sliders/new'">
+                    <div class="card-body">
+                        <h5 class="card-title">New Image</h5>
+                        <p class="card-text">
+                            Add a new image to the homepage slider
+                        </p>
+                        <a href="/admin/sliders/new" class="card-link">Add</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Images</h5>
+                        <p class="card-text">
+                            Manage the order of images, Add and remove images.
+                        </p>
+                        <a href="/admin/sliders/manage" class="card-link">Manage</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <hr />
+
+        <h2>Post Settings</h2>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card" onclick="window.location='/admin/posts/new'">
+                    <div class="card-body">
+                        <h5 class="card-title">New Post</h5>
+                        <p class="card-text">
+                            Compose a new post
+                        </p>
+                        <a href="/admin/posts/new" class="card-link">Compose</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Posts</h5>
+                        <p class="card-text">
+                            Edit and remove existing posts
+                        </p>
+                        <a href="/admin/posts/new" class="card-link">Manage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <h2>General Settings</h2>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Placeholder</h5>
+                        <p class="card-text">
+                            Lorem Ipsum
+                        </p>
+                        <a href="/admin/general?" class="card-link disabled">Lorum</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
