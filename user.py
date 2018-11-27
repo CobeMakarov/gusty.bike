@@ -56,7 +56,7 @@ class user:
             row = self.db.get_cursor().fetchone()
 
             self.username = row["username"]
-            self.rank = row["rank"]
+            self.admin = row["admin"]
         else:
             self.username = username
 

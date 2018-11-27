@@ -9,13 +9,15 @@
         <title> {{ page_title }} </title>
 
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='summernote/summernote.css') }}">
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.8.0/build/css/alertify.min.css" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs@1.8.0/build/css/themes/default.min.css" />
     </head>
     <style>
         .footer {
-            position: absolute;
+            position: fixed;
+            bottom: 0;
             width: 100%;
             height: 60px;
             line-height: 60px;
@@ -32,14 +34,15 @@
 
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
-                <!--
                 <li class="nav-item">
                     <a class="nav-link" href="/about">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contact">Contact</a>
+                    <a class="nav-link" href="/contests">Programming Contests</a>
                 </li>
-                -->
+                <li class="nav-item">
+                    <a class="nav-link" href="/contests">Other Sites</a>
+                </li>
             </ul>
 
             <!-- <form class="form-inline my-2 my-lg-0" style="padding-right: 10px;">
@@ -47,7 +50,7 @@
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form> -->
 
-            {% if client is defined and client.rank >= 3 %}
+            {% if client is defined and client.admin == 1 %}
             <a href="/admin" class="btn btn-outline-success my-3 my-sm-0">Admin Panel</a>
             {% else %}
             <a href="/login" class="btn btn-outline-primary my-3 my-sm-0">Login</a>
@@ -63,14 +66,21 @@
 
         {%block content %}{% endblock %}
 
+        <div style="height: 100px"></div>
+
         <footer class="footer" style="margin-top: 4%;">
             <div class="container">
                 <p class="float-right">&copy; Gusty Cooper 2017-2018</p>
             </div>
         </footer>
 
+        <script src="https://unpkg.com/popper.js/dist/umd/popper.min.js"></script>
+
         <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+
+        <script src="{{ url_for('static', filename='summernote/summernote.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/xss.js') }}"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/alertifyjs@1.11.1/build/alertify.min.js"></script>
 

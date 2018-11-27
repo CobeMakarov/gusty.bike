@@ -41,7 +41,7 @@ CREATE TABLE public.posts (
     id integer NOT NULL,
     title text,
     content text,
-    created timestamp without time zone,
+    created timestamp without time zone DEFAULT now(),
     author_id integer NOT NULL,
     image_path text
 );
@@ -130,40 +130,6 @@ ALTER SEQUENCE public.slider_images_id_seq OWNED BY public.slider_images.id;
 
 
 --
--- Name: user_ranks; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.user_ranks (
-    id integer NOT NULL,
-    title text
-);
-
-
-ALTER TABLE public.user_ranks OWNER TO postgres;
-
---
--- Name: user_ranks_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.user_ranks_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.user_ranks_id_seq OWNER TO postgres;
-
---
--- Name: user_ranks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.user_ranks_id_seq OWNED BY public.user_ranks.id;
-
-
---
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -172,11 +138,7 @@ CREATE TABLE public.users (
     email text,
     username text,
     password text,
-    salt text,
-    auth_key text,
-    auth_expiration timestamp without time zone,
-    auth_salt text,
-    rank integer DEFAULT 1
+    admin integer DEFAULT 0
 );
 
 
@@ -226,13 +188,6 @@ ALTER TABLE ONLY public.slider_images ALTER COLUMN id SET DEFAULT nextval('publi
 
 
 --
--- Name: user_ranks id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_ranks ALTER COLUMN id SET DEFAULT nextval('public.user_ranks_id_seq'::regclass);
-
-
---
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -256,14 +211,6 @@ ALTER TABLE ONLY public.slider_images
 
 
 --
--- Name: user_ranks user_ranks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_ranks
-    ADD CONSTRAINT user_ranks_pkey PRIMARY KEY (id);
-
-
---
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -277,14 +224,6 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.posts
     ADD CONSTRAINT posts_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.users(id);
-
-
---
--- Name: users users_rank_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.users
-    ADD CONSTRAINT users_rank_fkey FOREIGN KEY (rank) REFERENCES public.user_ranks(id);
 
 
 --

@@ -7,7 +7,7 @@
         <div class="jumbotron">
             <div class="container">
                 <div class="row">
-                    <div id="carouselImage" class="carousel slide" data-ride="carousel">
+                    <div id="carouselImage" class="carousel slide" data-ride="carousel" style="margin-left: 4%;">
                         <div class="carousel-inner">
                             {% for img in carousel.images %}
                             {% if loop.index == 1 %}
@@ -37,21 +37,22 @@
         {% endif %}
         <div class="container">
             <div class="row">
-                <div class="col-md-4">
-                    <h2>Post 1</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-                </div>
-                <div class="col-md-4">
-                    <h2>Post 2</h2>
-                    <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-                    <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-                </div>
-                <div class="col-md-4">
-                    <h2>Post 3</h2>
-                    <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-                    <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-                </div>
+                {% if recent_posts|length > 0 %}
+                    {% for rp in recent_posts %}
+                        <div class="col-md-4">
+                            <div class="card" style="margin-bottom: 3%;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ rp.title }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">by {{ rp.get_author_name() }} <small>{{  ago.format(rp.creation_date, date.datetime.now()) }}</small></h6>
+                                    <div class="card-text" style="height: 76px;">{{ rp.get_gist() }}</div>
+                                    <a href="/post/{{ rp.id }}" class="card-link">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h6>No Recent Posts Available</h6>
+                {%  endif %}
             </div>
             <hr>
         </div>

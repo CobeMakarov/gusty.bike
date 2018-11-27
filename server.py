@@ -1,5 +1,7 @@
 import os
-from datetime import datetime
+
+import timeago, datetime
+
 from flask import Flask, render_template, session, request, url_for, redirect
 
 from database import database
@@ -22,14 +24,16 @@ db = database()
 def home():
     db.connect()
 
-    if not session.get('authenticated'):
-        return render_template('home.html', page_title='gusty.bike')
-
-    client = user(session['user_id'], db)
-
     carousel = slider(db)
+    ps = posts(db)
 
-    return render_template('home.html', page_title='gusty.bike', client=client, carousel=carousel)
+    if session.get('authenticated'):
+        client = user(session['user_id'], db)
+    else:
+        client = None
+
+    return render_template('home.html', page_title='gusty.bike', client=client, carousel=carousel,
+                           ago=timeago,date=datetime, recent_posts=ps.most_recent())
 
 
 @app.route('/login')
@@ -38,7 +42,7 @@ def login():
     if session.get('authenticated'):
         return redirect(url_for('home'))
 
-    return render_template('login.html', page_title='gusty.bike')
+    return render_template('login.html', page_title='gusty.bike', client=None)
 
 
 @app.route('/logout')
@@ -47,6 +51,30 @@ def logout():
         session.clear()
 
     return redirect(url_for('home'))
+
+
+@app.route('/about')
+def about():
+    db.connect()
+
+    if session.get('authenticated'):
+        client = user(session['user_id'], db)
+    else:
+        client = None
+
+    return render_template('about.html', page_title='gusty.bike', client=client)
+
+
+@app.route('/contests')
+def contests():
+    db.connect()
+
+    if session.get('authenticated'):
+        client = user(session['user_id'], db)
+    else:
+        client = None
+
+    return render_template('contests.html', page_title='gusty.bike', client=client)
 
 
 @app.route('/authenticate', methods=['GET', 'POST'])
@@ -111,12 +139,19 @@ def authenticate():
 
 
 @app.route('/post/<id>')
-def post(id):
+def view_post(id):
     db.connect()
 
-    p = post(id)
+    p = post(db, id)
+    ps = posts(db)
 
-    return 'hello'
+    if session.get('authenticated'):
+        client = user(session['user_id'], db)
+    else:
+        client = None
+
+    return render_template('post.html', page_title='gusty.bike', p=p, client=client, ago=timeago,
+                           date=datetime, recent_posts=ps.most_recent(p.id))
 
 
 @app.route('/admin')
@@ -129,7 +164,7 @@ def admin():
 
     client = user(session['user_id'], db)
 
-    if not client.rank >= 3:
+    if not admin_check():
         return redirect(url_for('home'))
 
     return render_template('admin.html', page_title='gusty.bike', client=client)
@@ -144,7 +179,7 @@ def new_slider():
 
     client = user(session['user_id'], db)
 
-    if not client.rank >= 3:
+    if not admin_check():
         return redirect(url_for('home'))
 
     return render_template('admin_sliders_new.html', page_title='gusty.bike', client=client)
@@ -158,10 +193,24 @@ def new_post():
     db.connect()
     client = user(session['user_id'], db)
 
-    if not client.rank >= 3:
+    if not admin_check():
         return redirect(url_for('home'))
 
     return render_template('admin_posts_new.html', page_title='gusty.bike', client=client)
+
+
+@app.route('/admin/users/new')
+def new_user():
+    if not session.get('authenticated'):
+        return redirect(url_for('home'))
+
+    db.connect()
+    client = user(session['user_id'], db)
+
+    if not admin_check():
+        return redirect(url_for('home'))
+
+    return render_template('admin_users_new.html', page_title='gusty.bike', client=client)
 
 
 @app.route('/admin/api/sliders/new', methods=['GET', 'POST'])
@@ -208,7 +257,7 @@ def admin_api_new_post():
         return None
 
     title = request.form["title"]
-    content = request.form["content"]
+    content = request.form["safe_content"]
 
     if title is None:
         return "title_fail"
@@ -218,16 +267,16 @@ def admin_api_new_post():
 
     author_id = session["user_id"]
 
-    if "image" in request.files:
-        f = request.files["image"]
+    if "newPostImage" in request.files:
+        f = request.files["newPostImage"]
 
         if f and is_image(f.filename):
-            path = os.path.join("/static/post_images/", secure_filename(f.filename))
+            path = os.path.join("./static/post_images/", secure_filename(f.filename))
             f.save(path)
 
-            return post.create(db, title, content, author_id, path)
+            return str(post.create(db, title, content, author_id, path))
 
-    return post.create(db, title, content, author_id, "")
+    return str(post.create(db, title, content, author_id, " "))
 
 
 def is_image(file):
@@ -246,7 +295,7 @@ def admin_check():
 
     client = user(session['user_id'], db)
 
-    if not client.rank >= 3:
+    if not client.admin == 1:
         return False
 
     return True

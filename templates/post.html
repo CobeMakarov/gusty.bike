@@ -1,0 +1,46 @@
+{% extends "main_layout.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <h4>{{ p.title }}</h4>
+                <hr />
+            </div>
+            <div class="col-md-4">
+                <h5> Recent Posts</h5>
+                <hr />
+            </div>
+            <div class="col-md-2">
+                composed by <i>{{ p.get_author_name() }}</i> <br />
+                <small>{{  ago.format(p.creation_date, date.datetime.now()) }}</small>
+            </div>
+            <div class="col-md-6">
+                {% if p.image_path|length >= 8 %}
+                    <img src="{{ p.image_path }}" class="img-fluid" />
+                {% endif %}
+                <div style="margin-top: 4%">
+                    {{ p.content|safe }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                {% if recent_posts|length > 0 %}
+                    {% for rp in recent_posts %}
+                        <div class="col-md-12">
+                            <div class="card" style="margin-bottom: 3%;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ rp.title }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">by {{ rp.get_author_name() }} <small>{{  ago.format(rp.creation_date, date.datetime.now()) }}</small></h6>
+                                    <div class="card-text">{{ rp.get_gist() }}</div>
+                                    <a href="/post/{{ rp.id }}" class="card-link">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h6>No Recent Posts Available</h6>
+                {%  endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
