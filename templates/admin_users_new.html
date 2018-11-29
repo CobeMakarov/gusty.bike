@@ -6,41 +6,85 @@
             bottom: 0;
         }
     </style>
+
+
     <div class="container-fluid" style="padding-left: 2%; padding-right: 1%;">
-        <h2>Add a new Slider image</h2>
-        <div class="row">
-            <div class="col-md-6">
-                <form class="form-horizontal" method="post" id="sliderForm" enctype="multipart/form-data">
+
+        <div class="col-md-6">
+
+            <div class="well" id="auth-form" style="margin-top:0%">
+
+                <form class="form-horizontal" id="register-layout" method="post">
+
+                    <legend>Register</legend>
+
                     <div class="form-group">
-                        <label for="newSliderImage" class="col-md-4 col-form-label">Slider Image</label>
+                        <label for="registerEmail" class="col-md-3 col-form-label">E-mail</label>
+
                         <div class="col-md-8">
-                            <input type="file" class="form-control-file" id="newSliderImage" name="sliderImage">
+                            <input type="email" class="form-control" name="email" id="registerEmail" placeholder="Email">
                         </div>
+
+                        <small id="emailHelp" class="form-text text-muted" style="padding-left: 20px;">We'll never share your email with anyone else.</small>
                     </div>
+
                     <div class="form-group">
-                        <label for="newSliderOrder" class="col-md-4 col-form-label">Image Order</label>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" id="newSliderOrder" name="order" placeholder="Leave blank to add to end">
+
+                        <label for="registerUsername" class="col-md-3 col-form-label">Username</label>
+
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="username" id="registerUsername" placeholder="Username">
                         </div>
                     </div>
+
+                    <div class="form-group">
+
+                        <label for="registerPassword" class="col-md-3 col-form-label">Password</label>
+
+                        <div class="col-md-8">
+                            <input type="password" class="form-control" name="password" id="registerPassword" placeholder="Password">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+
+                        <label for="registerPassword2" class="col-md-3 col-form-label">Password, again</label>
+
+                        <div class="col-md-8">
+                            <input type="password" class="form-control" name="password" id="registerPassword2" placeholder="Password, again">
+                        </div>
+                    </div>
+
                     <div class="col-md-2"></div>
+
                     <div class="col-md-10">
+
                         <div class="row">
-                            <div class="col-md-4">
-                                <button type="button" class="btn btn-link" onclick="window.location='/admin'" style="margin-left: -5%; font-size: 15px;">Return to Admin Panel</button>
+
+                            <div class="col-md-7">
+                                <button type="button" class="btn btn-link" id="showLogin" style="padding: 0 5px 0 5px;">
+                                    Go to Login
+                                </button>
                             </div>
-                            <div class="col-md-3">
-                                <button type="button" class="btn btn-info float-right" id="addNewSlider">Add Image</button>
+
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-info" id="completeRegistration" style="margin-left: 32%;">Register</button>
                             </div>
+
                         </div>
+
                     </div>
+
                     <div class="clearfix"></div>
+
                 </form>
+
             </div>
-            <div class="col-md-6">
-                <label class="col-md-4 col-form-label">Preview</label>
-                <img id="sliderPreview" class="img-fluid" />
-            </div>
+
         </div>
+
+        <div class="col-md-6"></div>
+
     </div>
+
 {% endblock %}

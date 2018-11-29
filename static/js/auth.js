@@ -42,6 +42,7 @@ $(document).ready(function() {
                     alertify.error("A user with that username already exists!");
                     break;
                 case '1': //success
+                    alertify.success("User successfully registered");
                     window.location.reload();
                     break;
                 case '2': //field blank
