@@ -1,0 +1,84 @@
+{% extends "admin_layout.html" %}
+
+{% block content %}
+    <style>
+        .footer {
+            bottom: 0;
+        }
+    </style>
+    <script>
+
+    </script>
+    <div class="container-fluid" style="padding-left: 2%; padding-right: 1%;">
+        <h2>Recent Posts</h2>
+        <div class="row">
+            {% if recent_posts|length > 0 %}
+                    {% for rp in recent_posts %}
+                        <div class="col-md-3">
+                            <div class="card" style="margin-bottom: 3%;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ rp.title }}</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">by {{ rp.get_author_name() }} <small>{{  ago.format(rp.creation_date, date.datetime.now()) }}</small></h6>
+                                    <div class="card-text" style="height: 76px;">{{ rp.get_gist() }}</div>
+                                    <a href="/post/{{ rp.id }}" class="card-link">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+            {% else %}
+                <h6>No Recent Posts Available</h6>
+            {%  endif %}
+        </div>
+
+        <div id="editPostExtra">
+            <hr />
+            <h2>Modify Post</h2>
+        </div>
+
+        <div class="row" id="editPost" slide="0">
+
+            <div class="col-md-6">
+                <form class="form-horizontal" method="post" id="postForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="editPostTitle" class="col-md-4 col-form-label">Title</label>
+                        <div class="col-md-11">
+                            <input type="text" class="form-control" id="editPostTitle" placeholder="Title of Post">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPostImage" class="col-md-4 col-form-label">Post Image</label>
+                        <div class="col-md-11">
+                            <input type="file" class="form-control-file" id="editPostImage" name="editPostImage">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPostBody" class="col-md-4 col-form-label">Content</label>
+                        <div class="col-md-11">
+                            <!--<textarea type="text" class="form-control" id="newPostBody" placeholder="What's on your mind?"></textarea> -->
+                            <div id="editPostBody"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="row">
+                            <div class="col-md-9">
+                               <!-- <button type="button" class="btn btn-link" onclick="window.location='/admin'" style="margin-left: -2%; font-size: 15px;">Return to Admin Panel</button> -->
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-info float-right" id="modifyPost">Update Post</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <label class="col-md-4 col-form-label">Preview</label>
+                <div class="col-md-12">
+                    <h5 id="postTitlePreview"></h5>
+                    <img id="postImagePreview" class="img-fluid" />
+                    <p id="postBodyPreview" style="margin-top: 5%;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

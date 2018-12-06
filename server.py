@@ -10,10 +10,14 @@ from slider import slider
 from posts import posts
 from post import post
 
+from lib.config import config
+
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = 'F12Zr47j\3yX R~X@H!jmM]Lwf/,?KT'
+app.secret_key = config.site["secret_key"]
+
+site_name = config.site["site_name"]
 
 allowed_image_extensions = [".png", ".jpg", ".jpeg"]
 
@@ -32,7 +36,7 @@ def home():
     else:
         client = None
 
-    return render_template('home.html', page_title='gusty.bike', client=client, carousel=carousel,
+    return render_template('home.html', page_title=site_name, client=client, carousel=carousel,
                            ago=timeago,date=datetime, recent_posts=ps.most_recent())
 
 
@@ -42,7 +46,7 @@ def login():
     if session.get('authenticated'):
         return redirect(url_for('home'))
 
-    return render_template('login.html', page_title='gusty.bike', client=None)
+    return render_template('login.html', page_title=site_name, client=None)
 
 
 @app.route('/logout')
@@ -62,7 +66,7 @@ def about():
     else:
         client = None
 
-    return render_template('about.html', page_title='gusty.bike', client=client)
+    return render_template('about.html', page_title=site_name, client=client)
 
 
 @app.route('/contests')
@@ -74,7 +78,7 @@ def contests():
     else:
         client = None
 
-    return render_template('contests.html', page_title='gusty.bike', client=client)
+    return render_template('contests.html', page_title=site_name, client=client)
 
 
 @app.route('/authenticate', methods=['GET', 'POST'])
@@ -129,16 +133,12 @@ def authenticate():
 
             session['user_id'] = user.create(email, password, username, db)
 
-            #print(session['user_id'])
-
-            #session['authenticated'] = True
-
             return '1'  # response 1 = SUCCESS!
     else:
         return None  # return nothing because the request isnt valid
 
 
-@app.route('/admin/users/authenticate', methods = ['GET', 'POST'])
+@app.route('/admin/users/authenticate', methods=['GET', 'POST'])
 def register_user():
     if request.method == "POST":
 
@@ -211,7 +211,7 @@ def view_post(id):
     else:
         client = None
 
-    return render_template('post.html', page_title='gusty.bike', p=p, client=client, ago=timeago,
+    return render_template('post.html', page_title=site_name, p=p, client=client, ago=timeago,
                            date=datetime, recent_posts=ps.most_recent(p.id))
 
 
@@ -228,7 +228,7 @@ def admin():
     if not admin_check():
         return redirect(url_for('home'))
 
-    return render_template('admin.html', page_title='gusty.bike', client=client)
+    return render_template('admin.html', page_title=site_name, client=client)
 
 
 @app.route('/admin/sliders/new')
@@ -243,7 +243,7 @@ def new_slider():
     if not admin_check():
         return redirect(url_for('home'))
 
-    return render_template('admin_sliders_new.html', page_title='gusty.bike', client=client)
+    return render_template('admin_sliders_new.html', page_title=site_name, client=client)
 
 
 @app.route('/admin/posts/new')
@@ -257,7 +257,7 @@ def new_post():
     if not admin_check():
         return redirect(url_for('home'))
 
-    return render_template('admin_posts_new.html', page_title='gusty.bike', client=client)
+    return render_template('admin_posts_new.html', page_title=site_name, client=client)
 
 
 @app.route('/admin/users/new')
@@ -271,7 +271,24 @@ def new_user():
     if not admin_check():
         return redirect(url_for('home'))
 
-    return render_template('admin_users_new.html', page_title='gusty.bike', client=client)
+    return render_template('admin_users_new.html', page_title=site_name, client=client)
+
+
+@app.route('/admin/posts/manage')
+def manage_post():
+    if not session.get('authenticated'):
+        return redirect(url_for('home'))
+
+    db.connect()
+
+    ps = posts(db)
+    client = user(session['user_id'], db)
+
+    if not admin_check():
+        return redirect(url_for('home'))
+
+    return render_template('admin_posts_manage.html', page_title=site_name, client=client, ago=timeago,
+                           date=datetime, recent_posts=ps.most_recent())
 
 
 @app.route('/admin/api/sliders/new', methods=['GET', 'POST'])
@@ -364,4 +381,4 @@ def admin_check():
 
 # start the server
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0')
