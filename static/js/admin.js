@@ -36,13 +36,13 @@ $(document).ready(function() {
             success: function(response) {
                 switch (response) {
                     case 'admin_fail': //fail
-                        alertify.error("Error creating post!");
+                        alertify.error("Error creating post");
                         break;
                     case 'title_fail': //success
-                        alertify.error("Post is missing a title!");
+                        alertify.error("Post is missing a title");
                         break;
                     case 'content_fail': //success
-                        alertify.error("Post is missing a body!");
+                        alertify.error("Post is missing a body");
                         break;
                     default:
                         window.location.href = "/post/" + response; //send user to the new post
@@ -71,13 +71,13 @@ $(document).ready(function() {
             success: function(response) {
                 switch (response) {
                     case '0': //fail
-                        alertify.error("Error uploading file, please make sure you are upload a valid image!");
+                        alertify.error("Error uploading file, please make sure you are upload a valid image");
                         break;
                     case '1': //success
-                        alertify.success("Image successfully added to the Homepage Slider!");
+                        alertify.success("Image successfully added to the homepage slider");
                         break;
                     case '2': //order not a number
-                        alertify.error("Order submitted is not a number!");
+                        alertify.error("Order submitted is not a number");
                         break;
 
                 }
@@ -85,8 +85,95 @@ $(document).ready(function() {
         });
     });
 
+    //edit post
+    $('.modifyPost').on('click', function() {
+        let id = $(this).attr("post");
+
+        console.log(id);
+
+        $.post('/admin/api/posts/grab', {'post_id': id}, function(response) {
+            if (response !== '0') {
+                let js = $.parseJSON(response);
+
+                let post_id = js["id"];
+                let title = js["title"];
+                let content = js["content"];
+                let path = js["image_path"];
+
+                $('#modifyPostPane').fadeOut('slow', function() {
+                    $("#editPostTitle").val(title);
+
+                    $('#editPostBody').summernote({
+                        height: 150,
+                        callbacks: {
+                            onKeyup: function(e) {
+                                $('#postBodyPreview').html(filterXSS($(this).summernote('code')));
+                            }
+                        }
+                    });
+
+                    $('#editPostBody').summernote('code', content);
+
+                    $('#postTitlePreview').text(title);
+                    $("#postImagePreview").attr('src', path);
+                    $('#submitModifyPost').attr('post', post_id);
+
+                    $(this).fadeIn('slow');
+                    $('#editPostExtra').fadeIn('slow');
+                });
+
+            }
+
+        })
+    });
+
+    $('.deletePost').on('click', function() {
+        let post_id = $(this).attr('post');
+
+        alertify.confirm("Delete Post?", "Are you sure you want to delete this post?", function() {
+           $.post('/admin/api/posts/delete', {'post_id': post_id}, function(response) {
+               switch(response) {
+                    case 'admin_fail': //fail
+                        alertify.error("Error removing post");
+                        break;
+                    default:
+                        alertify.success("Post successfully removed");
+                        window.location.reload();
+                        break;
+                }
+           })
+        }, function() { })
+    });
+
+    $('#submitModifyPost').on('click', function() {
+        let post_id = $(this).attr('post');
+        let title = $('#editPostTitle').val();
+        let content = filterXSS($('#editPostBody').summernote('code'));
+
+        $.post('/admin/api/posts/modify', {
+            'post_id': post_id,
+            'title': title,
+            'content': content}, function(response) {
+            switch(response) {
+                case 'admin_fail': //fail
+                    alertify.error("Error modifying post");
+                    break;
+                case 'title_fail': //fail
+                    alertify.error("Post is missing a title");
+                    break;
+                case 'content_fail': //fail
+                    alertify.error("Post is missing a body");
+                    break;
+                default:
+                    alertify.success("Post successfully modified");
+                    window.location.reload();
+                    break;
+            }
+        });
+    });
+
     $('#completeRegistration').on('click', function() {
-        $.post('authenticate', {
+        $.post('/authenticate', {
             'username': $("#registerUsername").val(),
             'email': $("#registerEmail").val(),
             'password': $("#registerPassword").val(),

@@ -357,6 +357,64 @@ def admin_api_new_post():
     return str(post.create(db, title, content, author_id, " "))
 
 
+@app.route('/admin/api/posts/modify', methods=['POST'])
+def admin_api_modify_post():
+    if not admin_check():
+        return "admin_fail"
+
+    if not request.method == "POST":
+        return None
+
+    post_id = int(request.form["post_id"])
+    title = request.form["title"]
+    content = request.form["content"]
+
+    if title is None:
+        return "title_fail"
+
+    if content is None:
+        return "content_fail"
+
+    if post_id > 0:
+        post.update(db, post_id, title, content)
+
+    return '0'
+
+
+@app.route('/admin/api/posts/delete', methods=['POST'])
+def admin_api_delete_post():
+    if not admin_check():
+        return "admin_fail"
+
+    if not request.method == "POST":
+        return None
+
+    post_id = int(request.form["post_id"])
+
+    if post_id > 0:
+        post.delete(db, post_id)
+
+    return '0'
+
+
+@app.route('/admin/api/posts/grab', methods=['POST'])
+def admin_api_grab_post():
+    if not admin_check():
+        return "admin_fail"
+
+    if not request.method == "POST":
+        return None
+
+    post_id = int(request.form["post_id"])
+
+    if post_id > 0:
+        ps = post(db, post_id)
+
+        return ps.jsonify()
+
+    return '0'
+
+
 def is_image(file):
     for ext in allowed_image_extensions:
         if file.endswith(ext):

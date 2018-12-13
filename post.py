@@ -1,4 +1,4 @@
-import re
+import re, json
 
 class post:
     def __init__(self, db, id, title=None, content=None, creation_date=None, author=None, image_path=None):
@@ -35,6 +35,18 @@ class post:
 
         return generated
 
+    @staticmethod
+    def update(db, id, title, content):
+        db.get_cursor().execute("UPDATE posts SET title = %s, content = %s WHERE id = %s", (title, content, id))
+
+        db.commit()
+
+    @staticmethod
+    def delete(db, id):
+        db.get_cursor().execute("DELETE FROM posts WHERE id = %s", (id, ))
+
+        db.commit()
+
     def get_author_name(self):
         self.db.get_cursor().execute("SELECT username FROM users WHERE id = %s", (self.author,))
 
@@ -44,3 +56,7 @@ class post:
 
     def get_gist(self):
         return re.compile(r'<[^>]+>').sub('', self.content[:100]) + " ..."
+
+    def jsonify(self):
+        return json.dumps({"id": self.id, "title": self.title, "content": self.content, "image_path": self.image_path},
+                          ensure_ascii=False)
