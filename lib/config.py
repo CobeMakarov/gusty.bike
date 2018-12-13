@@ -2,8 +2,8 @@ class config:
     database = {
         "host": "localhost",
         "port": 5432,
-        "username": "obiwan",
-        "password": "",
+        "username": "postgres",
+        "password": "passw0rd",
         "database": "gusty_bike"
     }
     site = {
