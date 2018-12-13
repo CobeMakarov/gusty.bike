@@ -89,8 +89,6 @@ $(document).ready(function() {
     $('.modifyPost').on('click', function() {
         let id = $(this).attr("post");
 
-        console.log(id);
-
         $.post('/admin/api/posts/grab', {'post_id': id}, function(response) {
             if (response !== '0') {
                 let js = $.parseJSON(response);
@@ -138,6 +136,24 @@ $(document).ready(function() {
                         break;
                     default:
                         alertify.success("Post successfully removed");
+                        window.location.reload();
+                        break;
+                }
+           })
+        }, function() { })
+    });
+
+    $(document).on('click', '.deleteSlider', function() {
+        let slider_id = $(this).attr('slider');
+
+        alertify.confirm("Delete Slider Image?", "Are you sure you want to delete this image?", function() {
+           $.post('/admin/api/sliders/delete', {'slider_id': slider_id}, function(response) {
+               switch(response) {
+                    case 'admin_fail': //fail
+                        alertify.error("Error removing image");
+                        break;
+                    default:
+                        alertify.success("Image successfully removed");
                         window.location.reload();
                         break;
                 }

@@ -3,6 +3,12 @@ from slider_image import slider_image
 
 
 class slider:
+    @staticmethod
+    def delete(db, id):
+        db.get_cursor().execute("DELETE FROM slider_images WHERE id = %s", (id,))
+
+        db.commit()
+
     def __init__(self, db):
 
         images = []

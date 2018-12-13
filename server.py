@@ -190,10 +190,6 @@ def register_user():
 
             session['user_id'] = user.create(email, password, username, db)
 
-            #print(session['user_id'])
-
-            #session['authenticated'] = True
-
             return '1'  # response 1 = SUCCESS!
     else:
         return None  # return nothing because the request isnt valid
@@ -275,7 +271,7 @@ def new_user():
 
 
 @app.route('/admin/posts/manage')
-def manage_post():
+def manage_posts():
     if not session.get('authenticated'):
         return redirect(url_for('home'))
 
@@ -289,6 +285,22 @@ def manage_post():
 
     return render_template('admin_posts_manage.html', page_title=site_name, client=client, ago=timeago,
                            date=datetime, recent_posts=ps.most_recent())
+
+
+@app.route('/admin/sliders/manage')
+def manage_sliders():
+    if not session.get('authenticated'):
+        return redirect(url_for('home'))
+
+    db.connect()
+
+    carousel = slider(db)
+    client = user(session['user_id'], db)
+
+    if not admin_check():
+        return redirect(url_for('home'))
+
+    return render_template('admin_sliders_manage.html', page_title=site_name, client=client, slider_images=carousel.images)
 
 
 @app.route('/admin/api/sliders/new', methods=['GET', 'POST'])
@@ -393,6 +405,22 @@ def admin_api_delete_post():
 
     if post_id > 0:
         post.delete(db, post_id)
+
+    return '0'
+
+
+@app.route('/admin/api/sliders/delete', methods=['POST'])
+def admin_api_delete_slider():
+    if not admin_check():
+        return "admin_fail"
+
+    if not request.method == "POST":
+        return None
+
+    slider_id = int(request.form["slider_id"])
+
+    if slider_id > 0:
+        slider.delete(db, slider_id)
 
     return '0'
 

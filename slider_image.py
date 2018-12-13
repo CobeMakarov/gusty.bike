@@ -4,5 +4,6 @@ class slider_image:
 
         self.id = id
         self.link = link
+        self.pretty_link = link[1:]
         self.order = order
 

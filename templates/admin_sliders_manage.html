@@ -1,0 +1,54 @@
+{% extends "admin_layout.html" %}
+
+{% block content %}
+    <style>
+        .footer {
+            bottom: 0;
+        }
+    </style>
+
+    <div class="container-fluid" style="padding-left: 2%; padding-right: 1%;">
+        <h2>Slider Images</h2>
+        <div class="row">
+            <div class="col-md-8">
+            {% if slider_images|length > 0 %}
+                <table class="table table-bordered">
+                    <thead>
+                        <th scope="col">#</th>
+                        <th scope="col">Image</th>
+                        <th scope="col"></th>
+                    </thead>
+                    <tbody>
+                        {% for si in slider_images %}
+                            <tr>
+                                <td>
+                                    {{  si.id }}
+                                </td>
+                                <td>
+                                    <img src="{{ si.pretty_link }}" class="img-thumbnail" height="500px" width="500px"/>
+                                </td>
+                                <td>
+                                    <div class="btn btn-danger deleteSlider" slider="{{ si.id }}">Remove</div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h6>No Images Available</h6>
+            {%  endif %}
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Slider Images</h5>
+                        <p class="card-body">
+                            Use this page to manage/remove images from the slider on the homepage.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
